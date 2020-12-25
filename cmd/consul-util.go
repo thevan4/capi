@@ -1,6 +1,22 @@
 package run
 
-import consulapi "github.com/hashicorp/consul/api"
+import (
+	"time"
+
+	consulapi "github.com/hashicorp/consul/api"
+)
+
+func newconsulKVClient(consulAddress string, consulTimeout time.Duration) (*consulapi.KV, error) {
+	// Get a new client
+	clientAPI := consulapi.DefaultConfig()
+	clientAPI.Address = consulAddress
+	clientAPI.WaitTime = consulTimeout
+	client, err := consulapi.NewClient(clientAPI)
+	if err != nil {
+		return nil, err
+	}
+	return client.KV(), nil
+}
 
 func isKeyExist(consulKVClient *consulapi.KV, keyPath string) (bool, error) {
 	value, meta, err := consulKVClient.Get(keyPath, nil)
