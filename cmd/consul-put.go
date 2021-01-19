@@ -32,7 +32,7 @@ func getServicesPaths(servicesDirectory string) ([]string, error) {
 			err)
 	}
 
-	servicesPaths := []string{}
+	var servicesPaths []string
 	for _, s := range services {
 		if s.IsDir() {
 			servicesPaths = append(servicesPaths, s.Name())
