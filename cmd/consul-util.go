@@ -6,7 +6,7 @@ import (
 	consulapi "github.com/hashicorp/consul/api"
 )
 
-func newconsulKVClient(consulAddress string, consulTimeout time.Duration) (*consulapi.KV, error) {
+func newConsulKVClient(consulAddress string, consulTimeout time.Duration) (*consulapi.KV, error) {
 	// Get a new client
 	clientAPI := consulapi.DefaultConfig()
 	clientAPI.Address = consulAddress

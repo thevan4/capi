@@ -118,7 +118,7 @@ func initForStart() (*consulapi.KV, *logrus.Logger, string) {
 	}).Info("")
 	// TODO: validate paths
 
-	consulKVClient, err := newconsulKVClient(viper.GetString("consul-address"),
+	consulKVClient, err := newConsulKVClient(viper.GetString("consul-address"),
 		viper.GetDuration("consul-timeout"))
 	if err != nil {
 		logging.WithFields(logrus.Fields{"event id": idForRootProcess}).Fatalf("make consul api kv client error: %v",
