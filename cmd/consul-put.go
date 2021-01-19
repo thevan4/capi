@@ -32,7 +32,7 @@ func getServicesPaths(servicesDirectory string) ([]string, error) {
 			err)
 	}
 
-	servicesPaths := []string{}
+	var servicesPaths []string
 	for _, s := range services {
 		if s.IsDir() {
 			servicesPaths = append(servicesPaths, s.Name())
@@ -129,7 +129,7 @@ func readAndPutManifest(consulKVClient *consulapi.KV,
 func putConsulData(consulKVClient *consulapi.KV,
 	servicesDirectory string,
 	manifestName string,
-	appSrvrsName string,
+	appServersName string,
 	rootPath string,
 	isForceUpdate bool) error {
 	servicesPaths, err := getServicesPaths(servicesDirectory)
@@ -153,13 +153,13 @@ func putConsulData(consulKVClient *consulapi.KV,
 					isForceUpdate); err != nil {
 					return fmt.Errorf("can't put manifest got error %v", err)
 				}
-			} else if maa.IsDir() && maa.Name() == appSrvrsName {
+			} else if maa.IsDir() && maa.Name() == appServersName {
 				// TODO: refactor
-				isAppSrvrsPathExist, err := isKeyExist(consulKVClient, rootPath)
+				isAppServersPathExist, err := isKeyExist(consulKVClient, rootPath)
 				if err != nil {
 					return err
 				}
-				if !isAppSrvrsPathExist {
+				if !isAppServersPathExist {
 					appF := &consulapi.KVPair{Key: rootPath + servicePath + "/" + maa.Name() + "/", Value: nil}
 					_, err = consulKVClient.Put(appF, nil)
 					if err != nil {
@@ -169,12 +169,12 @@ func putConsulData(consulKVClient *consulapi.KV,
 					}
 				}
 
-				appSrvsFiles, err := ioutil.ReadDir(servicesDirectory + "/" + servicePath + "/" + maa.Name())
+				appServersFiles, err := ioutil.ReadDir(servicesDirectory + "/" + servicePath + "/" + maa.Name())
 				if err != nil {
 					return fmt.Errorf("can't read app servers files: %v", err)
 				}
 
-				for _, app := range appSrvsFiles {
+				for _, app := range appServersFiles {
 					dat, err := ioutil.ReadFile(servicesDirectory + "/" + servicePath + "/" + maa.Name() + "/" + app.Name())
 					if err != nil {
 						return fmt.Errorf("read app server file %v error: %v",
