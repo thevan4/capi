@@ -35,6 +35,10 @@ func readConsulData(consulKVClient *consulapi.KV,
 				bsPath+appServersPath,
 				err)
 		}
+		if len(applicationServersPaths) == 0 {
+			return nil, fmt.Errorf("consul application servers paths by kv path %v is empty",
+				bsPath+appServersPath)
+		}
 		applicationServersTransportArray := make([]*ApplicationServerTransport, 0, len(applicationServersPaths)-1)
 		for _, applicationServersPath := range applicationServersPaths {
 			if applicationServersPath == bsPath+appServersPath {
