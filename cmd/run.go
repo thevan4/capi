@@ -13,7 +13,7 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "capi",
-	Short: "consul api worker for lbos 😉",
+	Short: "consul api worker for lbos ;-)",
 }
 
 // Execute ...
@@ -69,12 +69,30 @@ var putConsulRequest = &cobra.Command{
 			viper.GetString("manifest-name"),
 			viper.GetString("app-servers-folder"),
 			viper.GetString("consul-root-path"),
-			viper.GetBool("force-update-keys")); err != nil {
+			viper.GetBool("force-keys")); err != nil {
 			logging.WithFields(logrus.Fields{"event id": idForRootProcess}).Fatalf("put data error: %v",
 				err)
 		}
 		// TODO: more logs
 		logging.WithFields(logrus.Fields{"event id": idForRootProcess}).Info("put new services success")
+		return nil
+	},
+}
+
+var delConsulRequest = &cobra.Command{
+	Use:   "del",
+	Short: "del key in consul",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		consulKVClient, logging, idForRootProcess := initForStart()
+		logging.WithFields(logrus.Fields{"event id": idForRootProcess}).Info("start del key")
+		if err := deleteConsulData(consulKVClient,
+			viper.GetString("key-for-remove"),
+			viper.GetBool("force-keys")); err != nil {
+			logging.WithFields(logrus.Fields{"event id": idForRootProcess}).Fatalf("put root path %v to consul error: %v",
+				viper.GetString("consul-root-path"),
+				err)
+		}
+		logging.WithFields(logrus.Fields{"event id": idForRootProcess}).Info("remove key success")
 		return nil
 	},
 }
@@ -110,7 +128,7 @@ func initForStart() (*consulapi.KV, *logrus.Logger, string) {
 		"consul address":                                    viper.GetString("consul-address"),
 		"consul timeout":                                    viper.GetDuration("consul-timeout"),
 		"is put mode":                                       viper.GetBool("mode"),
-		"is force update mode":                              viper.GetBool("force-update-keys"),
+		"is force keys mode":                                viper.GetBool("force-keys"),
 		"consul root path for lbos cluster":                 viper.GetString("consul-root-path"),
 		"folder for json files for send to consul":          viper.GetString("data-dir-path-names"),
 		"manifest key name for service. Example: manifest":  viper.GetString("manifest-name"),
