@@ -37,7 +37,7 @@ func init() {
 		"Log format. Example values: 'text', 'json'")
 	rootCmd.PersistentFlags().String("syslog-tag",
 		"",
-		"Syslog tag. Example: 'trac-dgen'")
+		"Syslog tag. Example: 'capi-worker'")
 	rootCmd.PersistentFlags().Bool("log-event-location",
 		true,
 		"Log event location (like python)")
@@ -50,10 +50,14 @@ func init() {
 		"t",
 		2*time.Second,
 		"consul timeout")
-	rootCmd.PersistentFlags().BoolP("force-update-keys",
+	rootCmd.PersistentFlags().StringP("key-for-remove",
+		"k",
+		"lbos/t1-cluster-0/",
+		"key for remove. Also can remove key tree, when set force key")
+	rootCmd.PersistentFlags().BoolP("force-keys",
 		"f",
 		false,
-		"force update keys (bool)")
+		"force update/remove keys (bool)")
 
 	rootCmd.PersistentFlags().StringP("consul-root-path",
 		"r",
@@ -77,7 +81,7 @@ func init() {
 		os.Exit(1)
 	}
 
-	rootCmd.AddCommand(getConsulRequest, putConsulRequest)
+	rootCmd.AddCommand(getConsulRequest, putConsulRequest, delConsulRequest)
 }
 
 func initConfig() {
